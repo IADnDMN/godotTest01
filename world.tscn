@@ -1,0 +1,49 @@
+[gd_scene load_steps=8 format=3 uid="uid://blx0vcums670y"]
+
+[ext_resource type="Script" path="res://world.gd" id="1_3ahoh"]
+[ext_resource type="PackedScene" uid="uid://bx1nurt1mkeqn" path="res://ui.tscn" id="1_66wlu"]
+[ext_resource type="PackedScene" uid="uid://chv1lrhrjngcv" path="res://player.tscn" id="1_k7r0g"]
+[ext_resource type="Script" path="res://ui.gd" id="2_8dgj3"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_4caay"]
+sky_top_color = Color(0.12549, 0.12549, 0.12549, 1)
+sky_horizon_color = Color(0, 0, 0, 1)
+ground_bottom_color = Color(0, 0, 0, 1)
+ground_horizon_color = Color(0, 0, 0, 1)
+
+[sub_resource type="Sky" id="Sky_0hik1"]
+sky_material = SubResource("ProceduralSkyMaterial_4caay")
+
+[sub_resource type="Environment" id="Environment_co05h"]
+background_mode = 1
+sky = SubResource("Sky_0hik1")
+ambient_light_source = 1
+reflected_light_source = 1
+tonemap_mode = 2
+glow_enabled = true
+fog_light_color = Color(0, 0, 0, 1)
+fog_light_energy = 0.0
+fog_density = 0.25
+fog_height_density = 7.1287
+volumetric_fog_density = 0.2
+volumetric_fog_albedo = Color(0, 0, 0, 1)
+volumetric_fog_sky_affect = 0.0
+
+[node name="world" type="Node3D"]
+script = ExtResource("1_3ahoh")
+
+[node name="UI" parent="." instance=ExtResource("1_66wlu")]
+script = ExtResource("2_8dgj3")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 100, 0)
+visible = false
+light_color = Color(0.0392157, 0.0392157, 0.0392157, 1)
+light_energy = 2.0
+shadow_enabled = true
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_co05h")
+
+[node name="player" parent="." instance=ExtResource("1_k7r0g")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4, -1.5)
