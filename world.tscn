@@ -1,9 +1,10 @@
-[gd_scene load_steps=8 format=3 uid="uid://blx0vcums670y"]
+[gd_scene load_steps=9 format=3 uid="uid://blx0vcums670y"]
 
 [ext_resource type="Script" path="res://world.gd" id="1_3ahoh"]
 [ext_resource type="PackedScene" uid="uid://bx1nurt1mkeqn" path="res://ui.tscn" id="1_66wlu"]
 [ext_resource type="PackedScene" uid="uid://chv1lrhrjngcv" path="res://player.tscn" id="1_k7r0g"]
 [ext_resource type="Script" path="res://ui.gd" id="2_8dgj3"]
+[ext_resource type="PackedScene" uid="uid://1p4vnhdklshl" path="res://ghost.tscn" id="5_h1nno"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_4caay"]
 sky_top_color = Color(0.12549, 0.12549, 0.12549, 1)
@@ -47,3 +48,6 @@ environment = SubResource("Environment_co05h")
 
 [node name="player" parent="." instance=ExtResource("1_k7r0g")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4, -1.5)
+
+[node name="ghost" parent="." instance=ExtResource("5_h1nno")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0.2, 16)

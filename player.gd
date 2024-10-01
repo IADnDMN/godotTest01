@@ -1,8 +1,7 @@
 extends CharacterBody3D
 
-@onready
-var playerModel = $playerMesh
-#var camera = $player_camera
+@onready var playerModel = $playerMesh
+@onready var camera = $RemoteTransform3D
 
 var debugMode = false
 
@@ -24,6 +23,7 @@ var playerManaCooldown = 0.0
 var playerManaCooldownMax = 5.0
 var playerManaRegen = 2.0
 
+var playerZoomLevel = 3
 var playerSpeed = 60.0
 var playerSprintMult = 1.67
 var playerJumpImpulse = 7.0
@@ -91,6 +91,38 @@ func _tickCooldowns(delta):
 	else:
 		playerCanCast = true
 
+func _zoomIn():
+	if playerZoomLevel < 5:
+		playerZoomLevel += 1
+		if playerZoomLevel == 5 and not debugMode:
+			playerZoomLevel = 4
+	_zoomCamera()
+
+func _zoomOut():
+	if playerZoomLevel > 1:
+		playerZoomLevel -= 1
+		if playerZoomLevel == 1 and not debugMode:
+			playerZoomLevel = 2
+	_zoomCamera()
+
+func _zoomCamera():
+	match playerZoomLevel:
+		1:
+			camera.position.y = 25.0
+			camera.position.z = -6.67
+		2:
+			camera.position.y = 20.0
+			camera.position.z = -5.33
+		3:
+			camera.position.y = 15.0
+			camera.position.z = -4.0
+		4:
+			camera.position.y = 10.0
+			camera.position.z = -2.67
+		5:
+			camera.position.y = 5.0
+			camera.position.z = -1.33
+
 func _activateLight():
 	$playerSpotlight.spot_range = 32.0
 	$playerSpotlight.spot_angle = 85.0
@@ -108,6 +140,11 @@ func _physics_process(delta):
 	
 	if Input.is_action_just_pressed("debug"):
 		debugMode = !debugMode
+	
+	if Input.is_action_just_pressed("zoom_in"):
+		_zoomIn()
+	if Input.is_action_just_pressed("zoom_out"):
+		_zoomOut()
 	
 	if is_on_floor():
 		if Input.is_action_pressed("move_up"):
