@@ -1,0 +1,51 @@
+[gd_scene load_steps=7 format=3 uid="uid://dvw3xolrbfips"]
+
+[ext_resource type="Script" path="res://crelid.gd" id="1_wgvcd"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_olrrs"]
+albedo_color = Color(0, 0, 0, 1)
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_xnnir"]
+height = 1.5
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wxgta"]
+albedo_color = Color(0, 0, 0, 1)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_fvb10"]
+top_radius = 0.0
+bottom_radius = 0.05
+height = 0.5
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_b1ekf"]
+points = PackedVector3Array(0.485063, 0.338297, 0.078818, -0.485063, -0.338297, -0.0788179, -0.485063, -0.338297, 0.078818, 0.239589, -0.684606, -0.0569671, -0.0564229, 0.428573, -0.462497, -0.101533, 0.406063, 0.462457, 0.101442, -0.406079, 0.462475, -0.306619, 0.636021, -0.0793803, 0.168857, -0.337757, -0.46163, 0.283229, 0.634401, -0.147195, -0.236011, -0.517155, -0.348478, -0.259644, -0.587127, 0.25974, 0.485063, -0.338297, -0.078818, 0.369533, 0.335914, -0.324744, 0.213579, 0.561857, 0.325809, -0.485063, 0.338297, -0.078818, 0.369533, -0.335914, 0.324744, -0.324701, 0.335869, 0.369578, -0.3247, 0.335869, -0.369578, -0.235268, -0.291397, 0.437034, -0.102578, 0.706536, 0.170804, 0.235304, 0.291324, 0.43702, -0.239548, -0.684623, -0.0569804, 0.12517, -0.682869, 0.216316, -0.235267, -0.291396, -0.437033, -0.0570726, 0.684576, -0.239628, 0.147286, -0.63438, -0.283219, 0.390945, -0.379675, -0.279219, -0.41539, 0.426532, 0.213367, 0.213369, 0.426535, -0.415393, -0.41289, -0.267775, -0.278987, 0.438854, -0.450029, 0.123736)
+
+[node name="crelid" type="CharacterBody3D"]
+script = ExtResource("1_wgvcd")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0.5, 0)
+material_override = SubResource("StandardMaterial3D_olrrs")
+mesh = SubResource("CapsuleMesh_xnnir")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="MeshInstance3D"]
+transform = Transform3D(-0.5, 0.866025, 0, -0.866025, -0.5, 0, 0, 0, 1, 0.55, 0.4, 0)
+material_override = SubResource("StandardMaterial3D_wxgta")
+mesh = SubResource("CylinderMesh_fvb10")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="MeshInstance3D"]
+transform = Transform3D(-0.5, -0.866025, 0, 0.866025, -0.5, 0, 0, 0, 1, -0.55, 0.4, 0)
+material_override = SubResource("StandardMaterial3D_wxgta")
+mesh = SubResource("CylinderMesh_fvb10")
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="MeshInstance3D"]
+transform = Transform3D(1, 0, 0, 0, -0.5, 0.866025, 0, -0.866025, -0.5, 0, 0.4, -0.55)
+material_override = SubResource("StandardMaterial3D_wxgta")
+mesh = SubResource("CylinderMesh_fvb10")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0.5, 0)
+shape = SubResource("ConvexPolygonShape3D_b1ekf")
+
+[node name="normalCast" type="RayCast3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+target_position = Vector3(0, 0, 12)

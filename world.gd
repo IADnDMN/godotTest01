@@ -14,15 +14,21 @@ var tileStairsUp := preload("res://tiles/tile_stairsup.tscn")
 var tileTunnel := preload("res://tiles/tile_tunnel.tscn")
 var tileWall := preload("res://tiles/tile_wall.tscn")
 
+# Declare namespaces for enemies and preload:
+var crelid := preload("res://crelid.tscn")
 
-@export var corridorBuilders = 8												# number of builders to spawn
-@export var buildLife= 40														# lifetime of each builder
-@export var tileRows = 45														# map dimension, in tiles
-@export var tileCols = 45														# map dimension, in tiles
+@export var numCreeps = 1
+@export var corridorBuilders = 6												# number of builders to spawn
+@export var buildLife= 100														# lifetime of each builder
+@export var corridorC = 50.0													# variable to tune the probability curve for turns: higher c = longer halls
+@export var tileRows = 51														# map dimension, in tiles
+@export var tileCols = 51														# map dimension, in tiles
 var tileDim = 8																	# standard size of each tile (in godot units)
 var centerRow = floor(tileRows/2.0)												# index of center tile
 var centerCol = floor(tileCols/2.0)												# index of center tile
 var tileMap: Array 																# array in which map will be drawn
+var tileList: Array
+var spawners: Array
 
 # Checks whether cell North of provided coords is part of the dungeon:
 func _neighborN(row, col) -> bool:
@@ -38,7 +44,7 @@ func _neighborE(row, col) -> bool:
 
 # Checks whether cell South of provided coords is part of the dungeon:
 func _neighborS(row, col) -> bool:
-	if row != tileRows - 1 and tileMap[row+1][col] == "O":
+	if row != tileRows - 1 and (tileMap[row+1][col] == "O" or tileMap[row+1][col] == "^"):
 		return true
 	return false
 
@@ -56,9 +62,16 @@ func _drawMap():
 		for j in tileCols:
 			tileMap[i].append("_")
 
-	# Place the starting staircase and a landing space at the bottom: 
-	tileMap[centerRow][centerCol] = "^"
+	# Place the starting staircase and surround with dungeon:
+	tileMap[centerRow-1][centerCol-1] = "O"
 	tileMap[centerRow-1][centerCol] = "O"
+	tileMap[centerRow-1][centerCol+1] = "O"
+	tileMap[centerRow][centerCol-1] = "O"
+	tileMap[centerRow][centerCol] = "^"
+	tileMap[centerRow][centerCol+1] = "O"
+	tileMap[centerRow+1][centerCol-1] = "O"
+	tileMap[centerRow+1][centerCol] = "O"
+	tileMap[centerRow+1][centerCol+1] = "O"
 	
 	# For each builder, draw a line of dungeon tiles out from the starting landing:
 	for n in corridorBuilders:
@@ -69,7 +82,7 @@ func _drawMap():
 		var deltaJ = 0
 		var nextI = i
 		var nextJ = j
-		var c = 10.0															# variable to tune the probability curve for turns: higher c = longer halls
+		#var c = 
 		var sinceLastTurn = 0.0
 		var turnRand = 0.0
 		
@@ -84,7 +97,7 @@ func _drawMap():
 			
 			turnRand = randf()
 			# Turn builder if a map edge is reached--or randomly, based on length since last turn:
-			while (nextI == i and nextJ == j) or nextI < 0 or nextI >= tileRows or nextJ < 0 or nextJ >= tileCols or turnRand < sinceLastTurn / (sinceLastTurn + c):
+			while (nextI == i and nextJ == j) or nextI < 0 or nextI >= tileRows or nextJ < 0 or nextJ >= tileCols or turnRand < sinceLastTurn / (sinceLastTurn + corridorC):
 				turnRand = randf()
 				sinceLastTurn = 0
 				# Choose a new random direction:
@@ -108,11 +121,11 @@ func _drawMap():
 			j = nextJ
 
 	for i in tileRows:
-		print(tileMap[i])
+		print(" ".join(tileMap[i]))
 
 # Builds the dungeon by spawning and placing tiles based on the drawn map:
 func _buildDungeon():
-	var tileList = []
+	#var tileList = []
 	var xMax = tileDim * centerCol
 	var zMax = tileDim * centerRow
 	
@@ -136,12 +149,16 @@ func _buildDungeon():
 						tileList.back().basis.z = tileList.back().basis.z.rotated(Vector3.UP, PI)
 						add_child(tileList.back())
 						tileList.back().position = spawnAt
+						spawners.append(tileList.back().get_child(5))
+						tileList.back().get_child(5).position = spawnAt
 					[false, false, true, false]:
 						tileList.append(tileDeadEnd.instantiate())
 						tileList.back().basis.x = tileList.back().basis.x.rotated(Vector3.UP, PI/2.0)
 						tileList.back().basis.z = tileList.back().basis.z.rotated(Vector3.UP, PI/2.0)
 						add_child(tileList.back())
 						tileList.back().position = spawnAt
+						spawners.append(tileList.back().get_child(5))
+						tileList.back().get_child(5).position = spawnAt
 					[false, false, true, true]:
 						tileList.append(tileCorner.instantiate())
 						tileList.back().basis.x = tileList.back().basis.x.rotated(Vector3.UP, PI/2.0)
@@ -152,6 +169,8 @@ func _buildDungeon():
 						tileList.append(tileDeadEnd.instantiate())
 						add_child(tileList.back())
 						tileList.back().position = spawnAt
+						spawners.append(tileList.back().get_child(5))
+						tileList.back().get_child(5).position = spawnAt
 					[false, true, false, true]:
 						tileList.append(tileTunnel.instantiate())
 						add_child(tileList.back())
@@ -172,6 +191,8 @@ func _buildDungeon():
 						tileList.back().basis.z = tileList.back().basis.z.rotated(Vector3.UP, -PI/2.0)
 						add_child(tileList.back())
 						tileList.back().position = spawnAt
+						spawners.append(tileList.back().get_child(5))
+						tileList.back().get_child(5).position = spawnAt
 					[true, false, false, true]:
 						tileList.append(tileCorner.instantiate())
 						tileList.back().basis.x = tileList.back().basis.x.rotated(Vector3.UP, PI)
@@ -219,8 +240,14 @@ func _buildDungeon():
 func _ready():
 	_drawMap()
 	_buildDungeon()
+	for i in numCreeps:
+		var spawn = spawners[randi() % spawners.size()]
+		var creep = crelid.instantiate()
+		add_child(creep)
+		creep.position = spawn.position
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	pass
+

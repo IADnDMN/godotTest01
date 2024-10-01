@@ -1,7 +1,7 @@
 extends CharacterBody3D
 
 @onready
-var playerModel = $MeshInstance3D
+var playerModel = $playerMesh
 #var camera = $player_camera
 
 var debugMode = false
@@ -126,7 +126,7 @@ func _physics_process(delta):
 			_staminaChange(-playerJumpStamDrain)
 	else:
 		drag = $"..".dragAir
-		if Input.is_action_just_pressed("jump") and playerCanCast and playerMana > 0.0:
+		if Input.is_action_just_pressed("jump") and playerCanCast and playerMana > 0.0 and debugMode:
 			if playerMana >= playerDblJumpManaDrain:
 				moveDir.y = 1.0
 			else:

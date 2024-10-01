@@ -16,12 +16,12 @@ albedo_color = Color(0, 1, 1, 1)
 script = ExtResource("1_yob30")
 
 [node name="player_camera" type="Camera3D" parent="."]
-transform = Transform3D(-1, 1.30766e-07, -7.54979e-08, 0, 0.5, 0.866025, 1.50996e-07, 0.866025, -0.5, 0, 12, -4)
+transform = Transform3D(-1, -8.60946e-08, 1.51808e-08, 0, 0.173648, 0.984808, -8.74228e-08, 0.984808, -0.173648, 0, 15, -4)
 top_level = true
 fov = 100.0
 
 [node name="RemoteTransform3D" type="RemoteTransform3D" parent="."]
-transform = Transform3D(-1, 7.57103e-08, -4.37114e-08, 0, 0.5, 0.866025, 8.74228e-08, 0.866025, -0.5, 0, 12, -4)
+transform = Transform3D(1, 0, 0, 0, 0.258819, 0.965925, 0, -0.965925, 0.258819, 0, 15, -4)
 remote_path = NodePath("../player_camera")
 update_rotation = false
 update_scale = false
@@ -30,19 +30,19 @@ update_scale = false
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 shape = SubResource("ConvexPolygonShape3D_4qsqk")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+[node name="playerMesh" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 material_override = SubResource("StandardMaterial3D_glqjn")
 mesh = SubResource("CapsuleMesh_8rumb")
 
-[node name="RayCast3D" type="RayCast3D" parent="MeshInstance3D"]
+[node name="RayCast3D" type="RayCast3D" parent="playerMesh"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0.5)
 visibility_parent = NodePath("..")
 target_position = Vector3(0, 0, 1)
 debug_shape_custom_color = Color(1, 0, 1, 1)
 debug_shape_thickness = 5
 
-[node name="MeshInstance3D2" type="MeshInstance3D" parent="MeshInstance3D"]
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="playerMesh"]
 transform = Transform3D(0.33, 0, 0, 0, 0.33, 0, 0, 0, 0.33, 0, 0.5, 0.45)
 mesh = SubResource("SphereMesh_gpbqh")
 skeleton = NodePath("../..")
